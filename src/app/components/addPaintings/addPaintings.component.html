@@ -1,0 +1,95 @@
+<div class="col-lmb-22 wow fadeIn" data-wow-delay="0.1s">
+  <div class="bg-secondary p-5">
+    <h1 class="text-uppercase mb-4 text-center">Upload Rare Painting</h1>
+    <form [formGroup]="paintingForm" enctype="multipart/form-data" ngbAutofocus>
+
+      <div class="row my-2">
+          <label for="title" class="col-3 col-form-label">Title:</label>
+          <div class="col-9">
+            <input
+              type="text"
+              class="form-control bg-secondary"
+              id="title"
+              formControlName="painting_title"
+              [ngClass]="{
+                'is-valid': paintingForm.get('painting_title')!.valid && paintingForm.get('painting_title')!.touched,
+                'is-invalid': paintingForm.get('painting_title')!.invalid && paintingForm.get('painting_title')!.touched
+              }"/>
+              <div *ngIf="isValidField('painting_title')" class="form-text text-info">
+                {{ getFieldError("painting_title") }}
+              </div>
+          </div>
+      </div>
+
+      <div class="row my-2">
+        <label for="location" class="col-3 col-form-label">Location:</label>
+        <div class="col-9">
+          <input
+            type="text"
+            class="form-control bg-transparent"
+            id="location"
+            formControlName="location"
+            [ngClass]="{
+              'is-valid': paintingForm.get('location')!.valid && paintingForm.get('location')!.touched,
+              'is-invalid': paintingForm.get('location')!.invalid && paintingForm.get('location')!.touched
+            }"/>
+            <div *ngIf="isValidField('location')" class="form-text text-info">
+              {{ getFieldError("location") }}
+            </div>
+        </div>
+      </div>
+
+      <div class="row my-2">
+        <label for="category" class="col-3 col-form-label">Category:</label>
+        <div class="col-9">
+          <select
+            type="text"
+            class="bg-transparent form-select"
+            id="category"
+            formControlName="category"
+            [ngClass]="{
+              'is-valid': paintingForm.get('category')!.valid && paintingForm.get('category')!.touched,
+              'is-invalid': paintingForm.get('category')!.invalid && paintingForm.get('category')!.touched
+            }">
+            <option value="" disabled selected>Category</option>
+            <option value="nature">Author</option>
+            <option value="city">City</option>
+            <option value="ufo">Painting</option>
+            <option value="ghost">Theme</option>
+          </select>
+          <div *ngIf="isValidField('category')" class="form-text text-info">
+            {{ getFieldError("category") }}
+          </div>
+        </div>
+      </div>
+
+        <div class="row my-2">
+          <label for="img_name" class="col-3 col-form-label">Image:</label>
+          <div class="col-9">
+            <input
+              type="file"
+              class="form-control bg-transparent"
+              formControlName="img_name"
+              (change)="onImageLoad($event)"
+              [ngClass]="{
+                'is-valid': paintingForm.get('img_name')!.valid && paintingForm.get('img_name')!.touched,
+                'is-invalid': paintingForm.get('img_name')!.invalid && paintingForm.get('img_name')!.touched
+              }"/>
+            <div *ngIf="isValidField('img_name')" class="form-text text-info">
+              {{ getFieldError("img_name") }}
+            </div>
+          </div>
+        </div>
+
+        <div class="row my-2">
+          <div class="col-3 mt-4">
+            <button class="btn btn-secondary w-100 py-3" type="button" (click)="closeModal()">Cancel</button>
+          </div>
+          <div class="col-9 mt-4">
+            <button class="btn btn-primary w-100 py-3" type="submit">Send</button>
+          </div>
+        </div>
+
+    </form>
+  </div>
+</div>

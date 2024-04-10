@@ -1,0 +1,15 @@
+:host {
+  display: block;
+}
+
+.carousel-item img {
+  width: 100vw !important; 
+  height: 89vh !important; 
+  object-fit: cover !important; 
+}
+
+h1 {
+
+  font-family:Arial, Helvetica, sans-serif;
+  
+  }
