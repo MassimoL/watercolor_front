@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, WritableSignal, type OnInit } from '@angular/core';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PaintingsService } from '../../services/paintings.service';
-import { Paintings } from '../../interfaces/paintings.interface';
+import { PaintingService } from '../../services/paintings.service';
+import { PaintingsInterface } from '../../interfaces/paintings.interface';
 import { VoteService } from '../../services/vote.service';
 import { UsersService } from '../../services/users.service';
 import { User } from '../../interfaces/user';
@@ -17,14 +17,14 @@ import { User } from '../../interfaces/user';
 })
 export class PaintingsPageComponent implements OnInit {
   public id!: number;
-  public currentPainting!: Paintings;
+  public currentPainting!: PaintingsInterface;
   public currentUser!: User;
   public baseUrl: string = 'http://localhost:3000/';
   public isLogged?: boolean;
   public hasVoted?: boolean;
 
   private route = inject(ActivatedRoute);
-  private paintingsService = inject(PaintingsService);
+  private paintingsService = inject(PaintingService);
   private router = inject(Router);
   private voteService = inject(VoteService);
   private usersService = inject(UsersService);
@@ -37,8 +37,8 @@ export class PaintingsPageComponent implements OnInit {
 
     this.route.params.subscribe((params) => {
       this.id = params?.['painting_id'];
-      this.paintingsService.getPainting(this.id).subscribe((painting) => {
-        this.currentPainting = painting;
+      this.paintingsService.getPainting(this.id).subscribe((paintings) => {
+        this.currentPainting = paintings;
       });
     });
 
@@ -49,9 +49,9 @@ export class PaintingsPageComponent implements OnInit {
     this.router.navigate(['paintings']);
   }
 
-  public userVote(user_id: number, painting_id: number, value: number) {
+  public userVote(user_id: number, id: number, value: number) {
     this.voteService
-      .hasUserVoted(this.currentUser.user_id, this.currentPainting.painting_id)
+      .hasUserVoted(this.currentUser.user_id, this.currentPainting.id)
       .subscribe((resp) => {
         this.hasVoted = resp.hasVoted;
 
@@ -62,7 +62,7 @@ export class PaintingsPageComponent implements OnInit {
           return;
         }
 
-        this.voteService.vote(user_id, painting_id).subscribe(
+        this.voteService.vote(user_id, id).subscribe(
           (resp) => console.log('user voted:', resp),
           (error) => {
             console.error('Error registering vote:', error);
@@ -70,7 +70,7 @@ export class PaintingsPageComponent implements OnInit {
           }
         );
 
-        this.voteService.updateVotes(painting_id, value).subscribe(() => {
+        this.voteService.updateVotes(id, value).subscribe(() => {
           this.paintingsService.getPainting(this.id).subscribe((painting) => {
             this.currentPainting = painting;
             alert('Thank you for voting!');

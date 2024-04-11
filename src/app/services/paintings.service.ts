@@ -1,34 +1,39 @@
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable, catchError, map, of } from 'rxjs';
-import { Paintings } from '../interfaces/paintings.interface';
+import { Observable } from 'rxjs';
+import { environment } from '../environments/environment';
+import { PaintingsInterface } from '../interfaces/paintings.interface';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class PaintingsService {
+export class PaintingService {
 
-  private http = inject(HttpClient);
-  public baseUrl = 'http://localhost:3000';
+  private myAppUrl: string;
+  private myApiUrl: string;
 
-  constructor() {}
-
-  getPainting(painting: number): Observable<Paintings>{
-    return this.http.get<Paintings>(`${this.baseUrl}/paintings/${painting}`)
+  constructor(private http: HttpClient) {
+    this.myAppUrl = environment.endpoint;
+    this.myApiUrl = 'api/paintings/';
   }
 
-  getAllPaintings(): Observable<Paintings[]> {
-    return this.http.get<Paintings[]>(`${this.baseUrl}/paintings`);
+  getListPaintings(): Observable<PaintingsInterface[]> {
+    return this.http.get<PaintingsInterface[]>(`${this.myAppUrl}${this.myApiUrl}`);
   }
 
-  deletePainting(painting: number): Observable<boolean> {
-    return this.http.delete(`${this.baseUrl}/paintings/${painting}`).pipe(
-      catchError((err) => of(false)),
-      map((resp) => true)
-    );
+  deletePainting(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.myAppUrl}${this.myApiUrl}${id}`);
   }
 
-  addPainting(painting: FormData): Observable<FormData> {
-    return this.http.post<FormData>(`${this.baseUrl}/paintings`, painting);
+  savePainting(painting: PaintingsInterface): Observable<PaintingsInterface> {
+    return this.http.post<PaintingsInterface>(`${this.myAppUrl}${this.myApiUrl}`, painting);
+  }
+
+  getPainting(id: number): Observable<PaintingsInterface> {
+    return this.http.get<PaintingsInterface>(`${this.myAppUrl}${this.myApiUrl}${id}`);
+  }
+
+  updatePainting(id: number, painting: PaintingsInterface): Observable<PaintingsInterface> {
+    return this.http.put<PaintingsInterface>(`${this.myAppUrl}${this.myApiUrl}${id}`, painting);
   }
 }
