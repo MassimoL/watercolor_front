@@ -1,39 +1,34 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '../environments/environment';
-import { PaintingsInterface } from '../interfaces/paintings.interface';
+import { Injectable, inject } from '@angular/core';
+import { Observable, catchError, map, of } from 'rxjs';
+import { Paintings } from '../interfaces/paintings.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class PaintingService {
+export class PaintingsService {
 
-  private myAppUrl: string;
-  private myApiUrl: string;
+  private http = inject(HttpClient);
+  public baseUrl = 'http://localhost:3000';
 
-  constructor(private http: HttpClient) {
-    this.myAppUrl = environment.endpoint;
-    this.myApiUrl = 'api/paintings/';
+  constructor() {}
+
+  getPainting(painting: number): Observable<Paintings>{
+    return this.http.get<Paintings>(`${this.baseUrl}/paintings/${painting}`)
   }
 
-  getListPaintings(): Observable<PaintingsInterface[]> {
-    return this.http.get<PaintingsInterface[]>(`${this.myAppUrl}${this.myApiUrl}`);
+  getAllPaintings(): Observable<Paintings[]> {
+    return this.http.get<Paintings[]>(`${this.baseUrl}/paintings`);
   }
 
-  deletePainting(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.myAppUrl}${this.myApiUrl}${id}`);
+  deletePainting(painting: number): Observable<boolean> {
+    return this.http.delete(`${this.baseUrl}/paintings/${painting}`).pipe(
+      catchError((err) => of(false)),
+      map((resp) => true)
+    );
   }
 
-  savePainting(painting: PaintingsInterface): Observable<PaintingsInterface> {
-    return this.http.post<PaintingsInterface>(`${this.myAppUrl}${this.myApiUrl}`, painting);
-  }
-
-  getPainting(id: number): Observable<PaintingsInterface> {
-    return this.http.get<PaintingsInterface>(`${this.myAppUrl}${this.myApiUrl}${id}`);
-  }
-
-  updatePainting(id: number, painting: PaintingsInterface): Observable<PaintingsInterface> {
-    return this.http.put<PaintingsInterface>(`${this.myAppUrl}${this.myApiUrl}${id}`, painting);
+  addPainting(painting: FormData): Observable<FormData> {
+    return this.http.post<FormData>(`${this.baseUrl}/paintings`, painting);
   }
 }
