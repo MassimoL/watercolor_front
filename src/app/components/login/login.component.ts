@@ -76,5 +76,4 @@ export class LoginComponent {
     this.activeModal.close();
     this.modalService.open(RegisterComponent);
   }
-
 }
