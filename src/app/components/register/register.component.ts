@@ -93,3 +93,5 @@ export class RegisterComponent {
     this.activeModal.close();
   }
 }
+
+
