@@ -77,4 +77,3 @@ export class LoginComponent {
     this.modalService.open(RegisterComponent);
   }
 }
-
